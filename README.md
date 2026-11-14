@@ -114,11 +114,11 @@ Add the repository and install, as in [Install](#install-add-this-repository-to-
 | **Subgen URL** | `http://your-server:9000` | Address of your Subgen server, as Jellyfin can reach it. |
 | **Timeout (minutes)** | `20` | Longest wait for one subtitle from the subtitle search. |
 
-### 3. Turn it on for your libraries
+### 3. Check your library settings
 
 **Dashboard → Libraries → (your TV or Movies library) → Manage library**
 
-- **Subtitle downloaders:** tick **Subgen Connect**.
+- **Subtitle downloaders:** **Subgen Connect** is ticked by itself after install (Jellyfin turns new downloaders on in every library). Untick it in a library where you do not want it.
 - **Download languages:** leave **empty**, unless you really want Jellyfin's nightly
   "Download missing subtitles" task to send your **whole library** to Subgen.
 - **Save subtitles into media folders:** tick it.
