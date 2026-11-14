@@ -34,7 +34,7 @@ public class SubgenController : ControllerBase
     /// Subgen skips files that already have its subtitle.
     /// </summary>
     [HttpPost("Generate/{itemId}")]
-    [Authorize(Policy = Policies.SubtitleManagement)] // admins and users with "Allow subtitle management"
+    [Authorize(Policy = Policies.SubtitleManagement)] // admins and users with "Allow this user to edit subtitles"
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<object>> Generate([FromRoute] Guid itemId, CancellationToken cancellationToken)

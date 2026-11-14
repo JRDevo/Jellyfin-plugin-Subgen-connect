@@ -1,5 +1,5 @@
 // Subgen plugin: adds a "Generate subtitles" button on item pages
-// (series, season, episode, movie) for administrators and users with "Allow subtitle management".
+// (series, season, episode, movie) for administrators and users with "Allow this user to edit subtitles".
 (function () {
     'use strict';
 
@@ -114,7 +114,7 @@
         lastItem = null;
 
         ApiClient.getCurrentUser().then(function (user) {
-            // Same rule as Jellyfin's "Edit subtitles": admins, or users with "Allow subtitle management".
+            // Same rule as Jellyfin's "Edit subtitles": admins, or users with "Allow this user to edit subtitles".
             if (!user || !user.Policy || !(user.Policy.IsAdministrator || user.Policy.EnableSubtitleManagement)) return null;
             return ApiClient.getItem(user.Id, id);
         }).then(function (item) {

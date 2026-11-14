@@ -48,7 +48,7 @@ file and writes a subtitle that matches it. This plugin puts that inside Jellyfi
 
 | Feature | Where | What happens |
 |---|---|---|
-| **CC button** | Item page of a **series, season, episode or movie** (web client; admins and users with *Allow subtitle management*) | Sends every video under that item to Subgen. Videos that already have an English subtitle are skipped. A small message at the bottom of the screen says how many were sent. |
+| **CC button** | Item page of a **series, season, episode or movie** (web client; admins and users with *Allow this user to edit subtitles*) | Sends every video under that item to Subgen. Videos that already have an English subtitle are skipped. A small message at the bottom of the screen says how many were sent. |
 | **"Generate with Subgen"** | **⋮ → Edit subtitles → Search** on an episode or movie | Jellyfin extracts the audio, Subgen writes the subtitle, Jellyfin saves it. |
 
 ```
@@ -131,7 +131,7 @@ Add the repository and install, as in [Install](#install-add-this-repository-to-
 The **CC button** and **Edit subtitles** use the same Jellyfin permission:
 
 - **Administrators** always have it.
-- Other users: **Dashboard → Users → (user) → Allow subtitle management**.
+- Other users: **Dashboard → Users → (user) → Allow this user to edit subtitles**.
 
 Users without it do not see the button. Only give it to people you trust to start long jobs on your Subgen server.
 
@@ -154,7 +154,7 @@ After installing or updating, press **Ctrl + F5** in the browser once so the web
 
 | Problem | Fix |
 |---|---|
-| No CC button | Press **Ctrl + F5**. Check the user is an administrator or has **Allow subtitle management**. Native apps do not show it. |
+| No CC button | Press **Ctrl + F5**. Check the user is an administrator or has **Allow this user to edit subtitles**. Native apps do not show it. |
 | "Subgen: request failed" | Check the **Subgen URL** in the plugin settings, and that Jellyfin can reach Subgen. |
 | Button says "sent", but no subtitle appears | Look at Subgen's log. Usually the paths differ between Jellyfin and Subgen, or Subgen cannot write to the folder. For Subgen's own errors, see the [Subgen project](https://github.com/McCloudS/subgen). |
 | Subgen Connect not listed under Subtitle downloaders | Restart Jellyfin after installing. Check **Dashboard → Plugins** shows Subgen Connect as Active. |
