@@ -94,8 +94,9 @@ Subgen container solved real problems while testing this plugin:
 | `SHOW_IN_SUBNAME_SUBGEN` and `SHOW_IN_SUBNAME_MODEL` | `False` | Jellyfin showed the subtitle as "subgen.large-v3-turbo" instead of just "English". |
 | `SKIP_ONLY_SUBGEN_SUBTITLES` | `True` | An old, bad downloaded `.en.srt` made Subgen skip the video. |
 
-Also: Subgen runs as user `99`, group `100` by default. If your media is on an SMB/CIFS
-mount, mount it with `uid=99,gid=100,file_mode=0664,dir_mode=0775`, or Subgen cannot save the `.srt`.
+> [!WARNING]
+> Subgen saves the `.srt` **next to the video**, so it needs **write access** to your media folders.
+> If subtitles never appear, check that the user Subgen runs as can write there.
 
 ---
 
