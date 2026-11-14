@@ -14,8 +14,9 @@
   <img alt="License" src="https://img.shields.io/badge/license-GPL--3.0-blue">
 </p>
 
-> **Unofficial.** This plugin is not made by the Jellyfin team or by the Subgen author.
-> It only talks to a Subgen server that you run yourself.
+> [!IMPORTANT]
+> **Unofficial, and Subgen is not included.** This plugin is not made by the Jellyfin team or by the Subgen author.
+> It only connects Jellyfin to a [Subgen](https://github.com/McCloudS/subgen) server that **you install and run yourself**.
 
 ---
 
