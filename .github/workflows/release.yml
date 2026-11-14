@@ -52,8 +52,8 @@ jobs:
 
       - name: Add version to manifest.json
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "JRDevo"
+          git config user.email "42043842+JRDevo@users.noreply.github.com"
           git fetch origin main
           git checkout main
           python3 scripts/update_manifest.py manifest.json \
