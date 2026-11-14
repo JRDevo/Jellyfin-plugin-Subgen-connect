@@ -1,0 +1,12 @@
+[
+  {
+    "guid": "5b9f3c1e-7a2d-4e8b-9c41-2f6d8a1b3e70",
+    "name": "Subgen",
+    "description": "Generate subtitles on demand with a Subgen (Whisper) server.",
+    "overview": "Adds 'Generate with Subgen' to the subtitle search and a one-click CC button for episodes, seasons, series and movies.",
+    "owner": "JRDevo",
+    "category": "Subtitles",
+    "imageUrl": "https://raw.githubusercontent.com/JRDevo/jellyfin-plugin-subgen/main/assets/banner.png",
+    "versions": []
+  }
+]

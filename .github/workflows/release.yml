@@ -1,0 +1,67 @@
+name: Release
+
+# Push a tag like v1.0.1 to build the plugin, attach the zip to a GitHub release,
+# and add the new version to manifest.json (the Jellyfin plugin catalog).
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Work out versions
+        id: v
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"                          # 1.0.1
+          PLUGIN_VER="$(echo "$TAG.0.0.0" | cut -d. -f1-4)"   # 1.0.1.0
+          JF_VER="$(grep -oP 'Include="Jellyfin.Controller" Version="\K[^"]+' Jellyfin.Plugin.Subgen/Jellyfin.Plugin.Subgen.csproj)"
+          ABI="$(echo "$JF_VER.0.0.0" | cut -d. -f1-4)"
+          echo "plugin=$PLUGIN_VER" >> "$GITHUB_OUTPUT"
+          echo "jellyfin=$JF_VER"   >> "$GITHUB_OUTPUT"
+          echo "abi=$ABI"           >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        run: |
+          dotnet publish Jellyfin.Plugin.Subgen/Jellyfin.Plugin.Subgen.csproj -c Release -o out \
+            -p:AssemblyVersion=${{ steps.v.outputs.plugin }} -p:FileVersion=${{ steps.v.outputs.plugin }}
+          ZIP="jellyfin-plugin-subgen_${{ steps.v.outputs.plugin }}.zip"
+          (cd out && zip -j "../$ZIP" Jellyfin.Plugin.Subgen.dll)
+          echo "ZIP=$ZIP" >> "$GITHUB_ENV"
+          echo "MD5=$(md5sum "$ZIP" | cut -d' ' -f1)" >> "$GITHUB_ENV"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "$ZIP" \
+            --title "$GITHUB_REF_NAME" \
+            --notes "Built for Jellyfin ${{ steps.v.outputs.jellyfin }}. Install from the plugin catalog (see README)."
+
+      - name: Add version to manifest.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git checkout main
+          python3 scripts/update_manifest.py manifest.json \
+            --version "${{ steps.v.outputs.plugin }}" \
+            --abi "${{ steps.v.outputs.abi }}" \
+            --jellyfin "${{ steps.v.outputs.jellyfin }}" \
+            --url "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/${ZIP}" \
+            --checksum "$MD5"
+          git add manifest.json
+          git commit -m "Catalog: add ${{ steps.v.outputs.plugin }}"
+          git push origin main

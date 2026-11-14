@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Subgen</title>
+</head>
+<body>
+<div id="SubgenConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button">
+    <div data-role="content">
+        <div class="content-primary">
+            <form id="SubgenConfigForm">
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="SubgenUrl">Subgen URL</label>
+                    <input id="SubgenUrl" name="SubgenUrl" type="text" is="emby-input" />
+                    <div class="fieldDescription">Address of your Subgen server, for example http://your-server:9000 or http://subgen:9000</div>
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="TimeoutMinutes">Timeout (minutes)</label>
+                    <input id="TimeoutMinutes" name="TimeoutMinutes" type="number" min="1" max="240" is="emby-input" />
+                </div>
+                <div>
+                    <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                        <span>Save</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var SubgenConfig = { pluginUniqueId: '5b9f3c1e-7a2d-4e8b-9c41-2f6d8a1b3e70' };
+
+        document.querySelector('#SubgenConfigPage').addEventListener('pageshow', function () {
+            Dashboard.showLoadingMsg();
+            ApiClient.getPluginConfiguration(SubgenConfig.pluginUniqueId).then(function (config) {
+                document.querySelector('#SubgenUrl').value = config.SubgenUrl;
+                document.querySelector('#TimeoutMinutes').value = config.TimeoutMinutes;
+                Dashboard.hideLoadingMsg();
+            });
+        });
+
+        document.querySelector('#SubgenConfigForm').addEventListener('submit', function (e) {
+            Dashboard.showLoadingMsg();
+            ApiClient.getPluginConfiguration(SubgenConfig.pluginUniqueId).then(function (config) {
+                config.SubgenUrl = document.querySelector('#SubgenUrl').value.trim();
+                config.TimeoutMinutes = parseInt(document.querySelector('#TimeoutMinutes').value, 10) || 20;
+                ApiClient.updatePluginConfiguration(SubgenConfig.pluginUniqueId, config).then(function (result) {
+                    Dashboard.processPluginConfigurationUpdateResult(result);
+                });
+            });
+            e.preventDefault();
+            return false;
+        });
+    </script>
+</div>
+</body>
+</html>
