@@ -61,6 +61,21 @@ file and writes a subtitle that matches it. This plugin puts that inside Jellyfi
   such as Jellyfin Media Player). Native apps (Android TV, Swiftfin, Findroid …) do not show it.
   "Edit subtitles → Search" works anywhere the app offers subtitle search.
 
+### Subgen settings that fixed problems for us
+
+Not required, and Subgen's own docs come first. These environment variables on the
+Subgen container solved real problems while testing this plugin:
+
+| Variable | Value | Problem it fixed |
+|---|---|---|
+| `CONCURRENT_TRANSCRIPTIONS` | `1` | With 2 jobs at once and VAD on, Subgen crashed (`SIGSEGV`) during a season run and lost its whole queue. |
+| `SUBGEN_KWARGS` | `{"vad": True}` | Without VAD, Whisper made up text during intro music and silence. |
+| `SHOW_IN_SUBNAME_SUBGEN` and `SHOW_IN_SUBNAME_MODEL` | `False` | Jellyfin showed the subtitle as "subgen.large-v3-turbo" instead of just "English". |
+| `SKIP_ONLY_SUBGEN_SUBTITLES` | `True` | An old, bad downloaded `.en.srt` made Subgen skip the video. |
+
+Also: Subgen runs as user `99`, group `100` by default. If your media is on an SMB/CIFS
+mount, mount it with `uid=99,gid=100,file_mode=0664,dir_mode=0775`, or Subgen cannot save the `.srt`.
+
 ---
 
 ## Setup
