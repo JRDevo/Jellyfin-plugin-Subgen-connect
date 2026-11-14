@@ -39,6 +39,16 @@ you can also get subtitles automatically when you press play or when a new episo
     └──────────── video.en.srt next to the video ◄───┘
 ```
 
+## Screenshots
+
+| CC button on a series / season page | "Generate with Subgen" in Edit subtitles → Search |
+|---|---|
+| <img src="assets/screenshots/cc-button.png" alt="CC button next to the heart" width="360"> | <img src="assets/screenshots/subtitle-search.png" alt="Subgen result in the subtitle search" width="480"> |
+
+| Plugin page | Plugin settings |
+|---|---|
+| <img src="assets/screenshots/plugin-page.png" alt="Subgen plugin page in Jellyfin" width="480"> | <img src="assets/screenshots/settings.png" alt="Subgen URL and timeout settings" width="480"> |
+
 ---
 
 ## Requirements
