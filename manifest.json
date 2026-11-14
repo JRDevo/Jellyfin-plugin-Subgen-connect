@@ -1,18 +1,18 @@
 [
   {
     "guid": "5b9f3c1e-7a2d-4e8b-9c41-2f6d8a1b3e70",
-    "name": "Subgen",
-    "description": "Generate subtitles on demand with a Subgen (Whisper) server.",
-    "overview": "Adds 'Generate with Subgen' to the subtitle search and a one-click CC button for episodes, seasons, series and movies.",
+    "name": "Subgen Connect",
+    "description": "Connects Jellyfin to your own Subgen server to generate subtitles on demand.",
+    "overview": "Adds 'Generate with Subgen' to the subtitle search and a one-click CC button for episodes, seasons, series and movies. Needs a Subgen server that you run yourself.",
     "owner": "JRDevo",
     "category": "Subtitles",
-    "imageUrl": "https://raw.githubusercontent.com/JRDevo/jellyfin-plugin-subgen/main/assets/banner.png",
+    "imageUrl": "https://raw.githubusercontent.com/JRDevo/jellyfin-plugin-subgen-connect/main/assets/banner.png",
     "versions": [
       {
         "version": "1.0.0.0",
         "changelog": "Built for Jellyfin 12.4.0.",
         "targetAbi": "12.4.0.0",
-        "sourceUrl": "https://github.com/JRDevo/jellyfin-plugin-subgen/releases/download/v1.0.0/jellyfin-plugin-subgen_1.0.0.0.zip",
+        "sourceUrl": "https://github.com/JRDevo/jellyfin-plugin-subgen-connect/releases/download/v1.0.0/jellyfin-plugin-subgen_1.0.0.0.zip",
         "checksum": "73d2a5c2647b5e6a1374162eca5a6ebd",
         "timestamp": "2026-11-14T23:38:35Z"
       }

@@ -19,11 +19,11 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 
     public static Plugin? Instance { get; private set; }
 
-    public override string Name => "Subgen";
+    public override string Name => "Subgen Connect";
 
     public override Guid Id => Guid.Parse("5b9f3c1e-7a2d-4e8b-9c41-2f6d8a1b3e70");
 
-    public override string Description => "Generate subtitles on demand with a Subgen (Whisper) server.";
+    public override string Description => "Connects Jellyfin to your own Subgen server to generate subtitles on demand.";
 
     public IEnumerable<PluginPageInfo> GetPages()
     {

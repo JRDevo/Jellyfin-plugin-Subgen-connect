@@ -24,7 +24,7 @@ public class SubgenSubtitleProvider : ISubtitleProvider
         _mediaEncoder = mediaEncoder;
     }
 
-    public string Name => "Subgen";
+    public string Name => "Subgen Connect";
 
     public IEnumerable<VideoContentType> SupportedMediaTypes => new[] { VideoContentType.Episode, VideoContentType.Movie };
 

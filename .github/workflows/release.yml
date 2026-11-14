@@ -37,7 +37,7 @@ jobs:
         run: |
           dotnet publish Jellyfin.Plugin.Subgen/Jellyfin.Plugin.Subgen.csproj -c Release -o out \
             -p:AssemblyVersion=${{ steps.v.outputs.plugin }} -p:FileVersion=${{ steps.v.outputs.plugin }}
-          ZIP="jellyfin-plugin-subgen_${{ steps.v.outputs.plugin }}.zip"
+          ZIP="jellyfin-plugin-subgen-connect_${{ steps.v.outputs.plugin }}.zip"
           (cd out && zip -j "../$ZIP" Jellyfin.Plugin.Subgen.dll)
           echo "ZIP=$ZIP" >> "$GITHUB_ENV"
           echo "MD5=$(md5sum "$ZIP" | cut -d' ' -f1)" >> "$GITHUB_ENV"

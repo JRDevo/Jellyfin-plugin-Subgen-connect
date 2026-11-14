@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="assets/banner.png" alt="Subgen for Jellyfin" width="560">
+  <img src="assets/banner.png" alt="Subgen Connect for Jellyfin" width="560">
 </p>
 
 <p align="center">
-  <b>Make good subtitles for any episode or movie in Jellyfin, with one click.</b><br>
-  A Jellyfin plugin that sends your media to a <a href="https://github.com/McCloudS/subgen">Subgen</a> server,
-  which writes the subtitle with Whisper.
+  <b>Subgen Connect: make good subtitles for any episode or movie in Jellyfin, with one click.</b><br>
+  A small Jellyfin plugin that connects Jellyfin to <b>your own</b> <a href="https://github.com/McCloudS/subgen">Subgen</a> server,
+  which writes the subtitle with Whisper. Subgen is not included.
 </p>
 
 <p align="center">
@@ -24,13 +24,13 @@
 **Repository URL:**
 
 ```
-https://raw.githubusercontent.com/JRDevo/jellyfin-plugin-subgen/main/manifest.json
+https://raw.githubusercontent.com/JRDevo/jellyfin-plugin-subgen-connect/main/manifest.json
 ```
 
 1. In Jellyfin, go to **Dashboard → Plugins**.
 2. Click **Manage repositories**, then **+** (New repository).
-3. **Repository name:** `Subgen` — **Repository URL:** the URL above. Click **Save**.
-4. Back in **Plugins**, open the **Subtitles** category (or **Available**), click **Subgen**, then **Install**.
+3. **Repository name:** `Subgen Connect` — **Repository URL:** the URL above. Click **Save**.
+4. Back in **Plugins**, open the **Subtitles** category (or **Available**), click **Subgen Connect**, then **Install**.
 5. **Restart Jellyfin** (Dashboard → Restart).
 6. Press **Ctrl + F5** in the browser once.
 
@@ -64,7 +64,7 @@ file and writes a subtitle that matches it. This plugin puts that inside Jellyfi
 
 | Plugin page | Plugin settings |
 |---|---|
-| <img src="assets/screenshots/plugin-page.png" alt="Subgen plugin page in Jellyfin" width="480"> | <img src="assets/screenshots/settings.png" alt="Subgen URL and timeout settings" width="480"> |
+| <img src="assets/screenshots/plugin-page.png" alt="Subgen Connect plugin page in Jellyfin" width="480"> | <img src="assets/screenshots/settings.png" alt="Subgen URL and timeout settings" width="480"> |
 
 ---
 
@@ -103,11 +103,11 @@ mount, mount it with `uid=99,gid=100,file_mode=0664,dir_mode=0775`, or Subgen ca
 ### 1. Install the plugin
 
 Add the repository and install, as in [Install](#install-add-this-repository-to-jellyfin) above
-(**Dashboard → Plugins → Manage repositories → +**, then install **Subgen** and restart).
+(**Dashboard → Plugins → Manage repositories → +**, then install **Subgen Connect** and restart).
 
 ### 2. Point the plugin at Subgen
 
-**Dashboard → Plugins → Subgen → Settings**
+**Dashboard → Plugins → Subgen Connect → Settings**
 
 | Setting | Example | Notes |
 |---|---|---|
@@ -118,7 +118,7 @@ Add the repository and install, as in [Install](#install-add-this-repository-to-
 
 **Dashboard → Libraries → (your TV or Movies library) → Manage library**
 
-- **Subtitle downloaders:** tick **Subgen**.
+- **Subtitle downloaders:** tick **Subgen Connect**.
 - **Download languages:** leave **empty**, unless you really want Jellyfin's nightly
   "Download missing subtitles" task to send your **whole library** to Subgen.
 - **Save subtitles into media folders:** tick it.
@@ -151,7 +151,7 @@ After installing or updating, press **Ctrl + F5** in the browser once so the web
 | No CC button | Press **Ctrl + F5**. Check you are an administrator. Native apps do not show it. |
 | "Subgen: request failed" | Check the **Subgen URL** in the plugin settings, and that Jellyfin can reach Subgen. |
 | Button says "sent", but no subtitle appears | Look at Subgen's log. Usually the paths differ between Jellyfin and Subgen, or Subgen cannot write to the folder. For Subgen's own errors, see the [Subgen project](https://github.com/McCloudS/subgen). |
-| Subgen not listed under Subtitle downloaders | Restart Jellyfin after installing. Check **Dashboard → Plugins** shows Subgen as Active. |
+| Subgen Connect not listed under Subtitle downloaders | Restart Jellyfin after installing. Check **Dashboard → Plugins** shows Subgen Connect as Active. |
 | Plugin shows "Not supported" after a Jellyfin update | A new plugin build for that Jellyfin version is needed (see below). |
 
 ---
@@ -171,7 +171,7 @@ docker run --rm -v "$PWD":/src -w /src mcr.microsoft.com/dotnet/sdk:10.0 \
   dotnet publish Jellyfin.Plugin.Subgen/Jellyfin.Plugin.Subgen.csproj -c Release -o out
 ```
 
-Copy `out/Jellyfin.Plugin.Subgen.dll` into a folder `Subgen` inside Jellyfin's `plugins`
+Copy `out/Jellyfin.Plugin.Subgen.dll` into a folder `SubgenConnect` inside Jellyfin's `plugins`
 folder and restart Jellyfin.
 
 **New Jellyfin version:** change the `Jellyfin.Controller` and `Jellyfin.Model` versions in
