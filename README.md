@@ -19,6 +19,26 @@
 
 ---
 
+## Install (add this repository to Jellyfin)
+
+**Repository URL:**
+
+```
+https://raw.githubusercontent.com/JRDevo/jellyfin-plugin-subgen/main/manifest.json
+```
+
+1. In Jellyfin, go to **Dashboard → Plugins**.
+2. Click **Manage repositories**, then **+** (New repository).
+3. **Repository name:** `Subgen` — **Repository URL:** the URL above. Click **Save**.
+4. Back in **Plugins**, open the **Subtitles** category (or **Available**), click **Subgen**, then **Install**.
+5. **Restart Jellyfin** (Dashboard → Restart).
+6. Press **Ctrl + F5** in the browser once.
+
+Then set the Subgen URL and turn the plugin on for your libraries: see [Setup](#setup).
+Updates arrive the same way as for official plugins.
+
+---
+
 ## What it does
 
 Downloaded subtitles are often for a different release: wrong timing, wrong episode,
@@ -82,12 +102,8 @@ mount, mount it with `uid=99,gid=100,file_mode=0664,dir_mode=0775`, or Subgen ca
 
 ### 1. Install the plugin
 
-1. In Jellyfin, open **Dashboard → Plugins → Repositories** (or **Catalog → ⚙**).
-2. Click **+** and add:
-   - **Name:** `Subgen`
-   - **URL:** `https://raw.githubusercontent.com/JRDevo/jellyfin-plugin-subgen/main/manifest.json`
-3. Open **Catalog**, find **Subgen** under **Subtitles**, click **Install**.
-4. **Restart Jellyfin.**
+Add the repository and install, as in [Install](#install-add-this-repository-to-jellyfin) above
+(**Dashboard → Plugins → Manage repositories → +**, then install **Subgen** and restart).
 
 ### 2. Point the plugin at Subgen
 
