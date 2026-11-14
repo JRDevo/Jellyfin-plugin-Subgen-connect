@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using System.Reflection;
 using Jellyfin.Data.Enums;
+using MediaBrowser.Common.Api;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using Microsoft.AspNetCore.Authorization;
@@ -33,7 +34,7 @@ public class SubgenController : ControllerBase
     /// Subgen skips files that already have its subtitle.
     /// </summary>
     [HttpPost("Generate/{itemId}")]
-    [Authorize(Policy = "RequiresElevation")]
+    [Authorize(Policy = Policies.SubtitleManagement)] // admins and users with "Allow subtitle management"
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<object>> Generate([FromRoute] Guid itemId, CancellationToken cancellationToken)
