@@ -3,6 +3,7 @@ using System.Reflection;
 using Jellyfin.Data.Enums;
 using MediaBrowser.Common.Api;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -55,13 +56,17 @@ public class SubgenController : ControllerBase
         }
         else
         {
+            // A season is not always the episodes' parent folder in Jellyfin's database
+            // (episodes can hang under the series and only point to the season by SeasonId).
+            // So for a season: take all episodes of its series and keep the ones of this season.
+            var season = item as Season;
             var children = _libraryManager.GetItemList(new InternalItemsQuery
             {
-                AncestorIds = new[] { item.Id },
+                AncestorIds = new[] { season is null ? item.Id : season.SeriesId },
                 IncludeItemTypes = new[] { BaseItemKind.Episode, BaseItemKind.Movie },
                 Recursive = true,
                 IsVirtualItem = false
-            });
+            }).Where(c => season is null || (c is Episode e && e.SeasonId == season.Id));
             videos.AddRange(children
                 .Where(c => !string.IsNullOrEmpty(c.Path))
                 .OrderBy(c => c.Path, StringComparer.Ordinal));

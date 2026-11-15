@@ -72,7 +72,7 @@
                 var msg;
                 var embedded = r.embedded || 0;
                 if (r.total === 0) {
-                    msg = 'Subgen: no video files found.';
+                    msg = 'Subgen: found no episodes or movies under "' + item.Name + '".';
                 } else if (r.sent === 0 && r.total === 1) {
                     msg = embedded
                         ? 'Subgen: this already has English subtitles inside the file. Use Edit subtitles → Search to make one anyway.'
