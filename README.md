@@ -61,7 +61,7 @@ file and writes a subtitle that matches it. This plugin puts that inside Jellyfi
 
 | CC button on a series / season page | "Generate with Subgen" in Edit subtitles → Search |
 |---|---|
-| <img src="assets/screenshots/cc-button.png" alt="CC button next to the heart" width="360"> | <img src="assets/screenshots/subtitle-search.png" alt="Subgen result in the subtitle search" width="480"> |
+| <img src="assets/screenshots/cc-button.png" alt="CC button next to the heart" width="360"> | <img src="assets/screenshots/subtitle-search-v2.png" alt="Subgen result in the subtitle search" width="480"> |
 
 | Plugin page | Plugin settings |
 |---|---|
