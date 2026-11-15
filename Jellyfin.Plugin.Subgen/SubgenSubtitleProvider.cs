@@ -43,7 +43,7 @@ public class SubgenSubtitleProvider : ISubtitleProvider
         {
             Id = id,
             ProviderName = Name,
-            Name = "Generate with Subgen (Whisper on GPU) - takes about 1 minute",
+            Name = "Generate with Subgen (Whisper)",
             Format = "srt",
             ThreeLetterISOLanguageName = request.Language,
             Author = "Subgen",

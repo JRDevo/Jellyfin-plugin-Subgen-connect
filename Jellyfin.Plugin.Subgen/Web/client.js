@@ -77,7 +77,7 @@
                         ? 'Subgen: this already has a subtitle. Delete it in Edit subtitles to make a new one.'
                         : 'Subgen: all ' + r.total + ' already have a subtitle.';
                 } else {
-                    msg = 'Subgen: making ' + r.sent + ' subtitle(s), about 1 minute each.';
+                    msg = 'Subgen: making ' + r.sent + ' subtitle(s). They show up here when ready.';
                     if (r.skipped > 0) msg += ' ' + r.skipped + ' already had one.';
                 }
                 toast(msg);
