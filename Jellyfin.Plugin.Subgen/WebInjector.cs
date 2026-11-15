@@ -23,7 +23,9 @@ public class WebInjectorStartupFilter : IStartupFilter
 
 public class WebInjectorMiddleware
 {
-    private const string Tag = "<!-- subgen-plugin --><script defer src=\"../Subgen/client.js\"></script>";
+    // The version in the address makes browsers load the new script after a plugin update.
+    private static readonly string Tag = "<!-- subgen-plugin --><script defer src=\"../Subgen/client.js?v="
+        + typeof(WebInjectorMiddleware).Assembly.GetName().Version + "\"></script>";
     private readonly RequestDelegate _next;
 
     public WebInjectorMiddleware(RequestDelegate next)

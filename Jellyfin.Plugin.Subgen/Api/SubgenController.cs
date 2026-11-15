@@ -3,6 +3,7 @@ using System.Reflection;
 using Jellyfin.Data.Enums;
 using MediaBrowser.Common.Api;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Entities;
@@ -54,21 +55,31 @@ public class SubgenController : ControllerBase
         {
             videos.Add(item);
         }
-        else
+        else if (item is Folder folder)
         {
-            // A season is not always the episodes' parent folder in Jellyfin's database
-            // (episodes can hang under the series and only point to the season by SeasonId).
-            // So for a season: take all episodes of its series and keep the ones of this season.
-            var season = item as Season;
-            var children = _libraryManager.GetItemList(new InternalItemsQuery
+            // Walk the folder links (ParentId) directly. Jellyfin's ancestor index can be
+            // empty for some libraries, which made AncestorIds queries return nothing.
+            var found = folder.GetRecursiveChildren(c =>
+                    (c is Episode || c is Movie)
+                    && !c.IsVirtualItem
+                    && !string.IsNullOrEmpty(c.Path));
+
+            if (found.Count == 0)
             {
-                AncestorIds = new[] { season is null ? item.Id : season.SeriesId },
-                IncludeItemTypes = new[] { BaseItemKind.Episode, BaseItemKind.Movie },
-                Recursive = true,
-                IsVirtualItem = false
-            }).Where(c => season is null || (c is Episode e && e.SeasonId == season.Id));
-            videos.AddRange(children
+                // Fallback: the ancestor index (works for collections and some views).
+                found = _libraryManager.GetItemList(new InternalItemsQuery
+                {
+                    AncestorIds = new[] { item.Id },
+                    IncludeItemTypes = new[] { BaseItemKind.Episode, BaseItemKind.Movie },
+                    Recursive = true,
+                    IsVirtualItem = false
+                });
+            }
+
+            videos.AddRange(found
                 .Where(c => !string.IsNullOrEmpty(c.Path))
+                .GroupBy(c => c.Id)
+                .Select(g => g.First())
                 .OrderBy(c => c.Path, StringComparer.Ordinal));
         }
 
@@ -169,6 +180,7 @@ public class SubgenController : ControllerBase
             return NotFound();
         }
 
+        Response.Headers.CacheControl = "no-cache";
         return File(stream, "application/javascript");
     }
 }
