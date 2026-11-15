@@ -25,7 +25,7 @@
 **Repository URL:**
 
 ```
-https://raw.githubusercontent.com/JRDevo/jellyfin-plugin-subgen-connect/main/manifest.json
+https://raw.githubusercontent.com/JRDevo/Jellyfin-plugin-Subgen-connect/main/manifest.json
 ```
 
 1. In Jellyfin, go to **Dashboard → Plugins**.
