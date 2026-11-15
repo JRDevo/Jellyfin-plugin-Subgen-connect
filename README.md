@@ -48,7 +48,7 @@ file and writes a subtitle that matches it. This plugin puts that inside Jellyfi
 
 | Feature | Where | What happens |
 |---|---|---|
-| **CC button** | Item page of a **series, season, episode or movie** (web client; admins and users with *Allow this user to edit subtitles*) | Sends every video under that item to Subgen. Videos that already have an English subtitle are skipped. A small message at the bottom of the screen says how many were sent. |
+| **CC button** | Item page of a **series, season, episode or movie** (web client; admins and users with *Allow this user to edit subtitles*) | Sends every video under that item to Subgen. Videos that already have an English subtitle are skipped. A small message at the bottom of the screen says how many were sent. Each subtitle shows up in Jellyfin by itself as soon as Subgen has made it; no manual refresh needed. |
 | **"Generate with Subgen"** | **⋮ → Edit subtitles → Search** on an episode or movie | Jellyfin extracts the audio, Subgen writes the subtitle, Jellyfin saves it. |
 
 ```
@@ -142,7 +142,8 @@ After installing or updating, press **Ctrl + F5** in the browser once so the web
 ## Using it
 
 - **One episode, a season or a whole series:** open its page and click the **CC** button
-  (after the ♥). A message says how many files were sent to Subgen.
+  (after the ♥). A message says how many files were sent to Subgen. The plugin watches for each new
+  `.srt` and refreshes only that episode in Jellyfin when it appears (it stops waiting after 3 hours).
 - **Replace a bad subtitle:** **⋮ → Edit subtitles**, delete the old one, then either click
   **CC** or use **Search → Generate with Subgen**.
 - Where and under what name the subtitle is saved depends on your Subgen settings.
@@ -195,7 +196,9 @@ folder and restart Jellyfin.
 - **CC button:** the plugin adds a small script to the web page as Jellyfin serves it
   (nothing on disk is changed). The button calls the plugin's API
   (`POST /Subgen/Generate/{itemId}`, protected by Jellyfin's own *SubtitleManagement* permission), which sends each video path
-  to Subgen's `/batch` endpoint.
+  to Subgen's `/batch` endpoint. Subgen does not tell Jellyfin about these jobs, so the plugin
+  checks every 15 seconds for each new `.srt` and then refreshes that one item (like
+  "Scan for new and updated files", nothing is downloaded or replaced).
 
 ---
 

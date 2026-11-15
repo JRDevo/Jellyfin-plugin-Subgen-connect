@@ -21,11 +21,13 @@ public class SubgenController : ControllerBase
     private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(30) };
 
     private readonly ILibraryManager _libraryManager;
+    private readonly SubtitleWatcher _watcher;
     private readonly ILogger<SubgenController> _logger;
 
-    public SubgenController(ILibraryManager libraryManager, ILogger<SubgenController> logger)
+    public SubgenController(ILibraryManager libraryManager, SubtitleWatcher watcher, ILogger<SubgenController> logger)
     {
         _libraryManager = libraryManager;
+        _watcher = watcher;
         _logger = logger;
     }
 
@@ -45,10 +47,10 @@ public class SubgenController : ControllerBase
             return NotFound();
         }
 
-        var paths = new List<string>();
+        var paths = new List<(Guid Id, string Path)>();
         if (item is Video && !string.IsNullOrEmpty(item.Path))
         {
-            paths.Add(item.Path);
+            paths.Add((item.Id, item.Path));
         }
         else
         {
@@ -62,15 +64,16 @@ public class SubgenController : ControllerBase
             paths.AddRange(children
                 .Where(c => !string.IsNullOrEmpty(c.Path))
                 .OrderBy(c => c.Path, StringComparer.Ordinal)
-                .Select(c => c.Path));
+                .Select(c => (c.Id, c.Path)));
         }
 
         var baseUrl = Plugin.Instance!.Configuration.SubgenUrl.TrimEnd('/');
         var sent = 0;
         var skipped = 0;
-        foreach (var path in paths)
+        var watch = new List<(Guid ItemId, string Path)>();
+        foreach (var (id, path) in paths)
         {
-            if (HasEnglishSubtitle(path))
+            if (SubtitleFiles.HasEnglishSubtitle(path))
             {
                 skipped++;
                 continue;
@@ -83,6 +86,7 @@ public class SubgenController : ControllerBase
                 if (resp.IsSuccessStatusCode)
                 {
                     sent++;
+                    watch.Add((id, path));
                 }
                 else
                 {
@@ -96,32 +100,14 @@ public class SubgenController : ControllerBase
             }
         }
 
+        // Subgen does not tell Jellyfin about /batch jobs; the watcher refreshes each item when its .srt appears.
+        if (watch.Count > 0)
+        {
+            _watcher.Watch(watch);
+        }
+
         _logger.LogInformation("Subgen: sent {Sent} of {Total} files for {Name} ({Skipped} already had a subtitle)", sent, paths.Count, item.Name, skipped);
         return Ok(new { sent, skipped, total = paths.Count, name = item.Name });
-    }
-
-    /// <summary>True if an English .srt file sits next to the video (name.en.srt, name.eng.srt, name.en.*.srt).</summary>
-    private static bool HasEnglishSubtitle(string videoPath)
-    {
-        try
-        {
-            var dir = Path.GetDirectoryName(videoPath);
-            if (dir is null || !Directory.Exists(dir))
-            {
-                return false;
-            }
-
-            var stem = Path.GetFileNameWithoutExtension(videoPath);
-            return Directory.EnumerateFiles(dir, stem + ".*.srt")
-                .Select(f => Path.GetFileName(f)[(stem.Length + 1)..].ToLowerInvariant())
-                .Any(rest => rest.StartsWith("en.", StringComparison.Ordinal)
-                    || rest.StartsWith("eng.", StringComparison.Ordinal)
-                    || rest.StartsWith("english.", StringComparison.Ordinal));
-        }
-        catch (IOException)
-        {
-            return false;
-        }
     }
 
     /// <summary>The script that adds the button to the web page.</summary>
