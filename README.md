@@ -48,7 +48,7 @@ file and writes a subtitle that matches it. This plugin puts that inside Jellyfi
 
 | Feature | Where | What happens |
 |---|---|---|
-| **CC button** | Item page of a **series, season, episode or movie** (web client; admins and users with *Allow this user to edit subtitles*) | Sends every video under that item to Subgen. Videos that already have an English subtitle are skipped. A small message at the bottom of the screen says how many were sent. Each subtitle shows up in Jellyfin by itself as soon as Subgen has made it; no manual refresh needed. |
+| **CC button** | Item page of a **series, season, episode or movie** (web client; admins and users with *Allow this user to edit subtitles*) | Sends every video under that item to Subgen. Videos that already have an English subtitle are skipped: an `.srt` file next to the video, or a full (not forced) English subtitle track inside the file. A small message at the bottom of the screen says how many were sent. Each subtitle shows up in Jellyfin by itself as soon as Subgen has made it; no manual refresh needed. |
 | **"Generate with Subgen"** | **⋮ → Edit subtitles → Search** on an episode or movie | Jellyfin extracts the audio, Subgen writes the subtitle, Jellyfin saves it. |
 
 ```
@@ -93,6 +93,7 @@ Subgen container solved real problems while testing this plugin:
 | `SUBGEN_KWARGS` | `{"vad": True}` | Without VAD, Whisper made up text during intro music and silence. |
 | `SHOW_IN_SUBNAME_SUBGEN` and `SHOW_IN_SUBNAME_MODEL` | `False` | Jellyfin showed the subtitle as "subgen.large-v3-turbo" instead of just "English". |
 | `SKIP_ONLY_SUBGEN_SUBTITLES` | `True` | An old, bad downloaded `.en.srt` made Subgen skip the video. |
+| `SKIP_IF_INTERNAL_SUBTITLES_LANGUAGE` | `eng` | Subgen also made subtitles for files that already have good English subtitles inside them (for its webhook jobs). |
 
 > [!WARNING]
 > Subgen saves the `.srt` **next to the video**, so it needs **write access** to your media folders.
@@ -147,7 +148,9 @@ After installing or updating, press **Ctrl + F5** in the browser once so the web
 - **Replace a bad subtitle:** **⋮ → Edit subtitles**, delete the old one, then either click
   **CC** or use **Search → Generate with Subgen**.
 - Where and under what name the subtitle is saved depends on your Subgen settings.
-  The CC button skips a video when an English `.srt` (`name.en.srt`, `name.eng.srt` …) is already next to it.
+  The CC button skips a video when an English `.srt` (`name.en.srt`, `name.eng.srt` …) is already next to it,
+  or when the file itself has an English subtitle track (forced tracks and tracks without a language do not count).
+  **Edit subtitles → Search → Generate with Subgen** never skips: use it to make one anyway.
 
 ---
 

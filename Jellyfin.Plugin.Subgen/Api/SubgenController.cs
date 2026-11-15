@@ -4,6 +4,7 @@ using Jellyfin.Data.Enums;
 using MediaBrowser.Common.Api;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Model.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -47,10 +48,10 @@ public class SubgenController : ControllerBase
             return NotFound();
         }
 
-        var paths = new List<(Guid Id, string Path)>();
+        var videos = new List<BaseItem>();
         if (item is Video && !string.IsNullOrEmpty(item.Path))
         {
-            paths.Add((item.Id, item.Path));
+            videos.Add(item);
         }
         else
         {
@@ -61,21 +62,30 @@ public class SubgenController : ControllerBase
                 Recursive = true,
                 IsVirtualItem = false
             });
-            paths.AddRange(children
+            videos.AddRange(children
                 .Where(c => !string.IsNullOrEmpty(c.Path))
-                .OrderBy(c => c.Path, StringComparer.Ordinal)
-                .Select(c => (c.Id, c.Path)));
+                .OrderBy(c => c.Path, StringComparer.Ordinal));
         }
 
         var baseUrl = Plugin.Instance!.Configuration.SubgenUrl.TrimEnd('/');
         var sent = 0;
         var skipped = 0;
+        var embedded = 0;
         var watch = new List<(Guid ItemId, string Path)>();
-        foreach (var (id, path) in paths)
+        foreach (var video in videos)
         {
+            var id = video.Id;
+            var path = video.Path;
             if (SubtitleFiles.HasEnglishSubtitle(path))
             {
                 skipped++;
+                continue;
+            }
+
+            // Embedded (inside the file) full English subtitles are usually better than generated ones.
+            if (HasEmbeddedEnglishSubtitle(video))
+            {
+                embedded++;
                 continue;
             }
 
@@ -106,8 +116,39 @@ public class SubgenController : ControllerBase
             _watcher.Watch(watch);
         }
 
-        _logger.LogInformation("Subgen: sent {Sent} of {Total} files for {Name} ({Skipped} already had a subtitle)", sent, paths.Count, item.Name, skipped);
-        return Ok(new { sent, skipped, total = paths.Count, name = item.Name });
+        _logger.LogInformation(
+            "Subgen: sent {Sent} of {Total} files for {Name} ({Skipped} had a subtitle file, {Embedded} had embedded English subtitles)",
+            sent,
+            videos.Count,
+            item.Name,
+            skipped,
+            embedded);
+        return Ok(new { sent, skipped, embedded, total = videos.Count, name = item.Name });
+    }
+
+    /// <summary>
+    /// True if the video file itself holds an English subtitle track that is not "forced".
+    /// Forced tracks only cover foreign-language parts, so they do not count.
+    /// Tracks with no language tag do not count either (they may be another language).
+    /// </summary>
+    private bool HasEmbeddedEnglishSubtitle(BaseItem video)
+    {
+        try
+        {
+            return video.GetMediaStreams().Any(s =>
+                s.Type == MediaStreamType.Subtitle
+                && !s.IsExternal
+                && !s.IsForced
+                && s.Language is not null
+                && (s.Language.Equals("eng", StringComparison.OrdinalIgnoreCase)
+                    || s.Language.Equals("en", StringComparison.OrdinalIgnoreCase)
+                    || s.Language.Equals("english", StringComparison.OrdinalIgnoreCase)));
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or ArgumentException)
+        {
+            _logger.LogDebug(ex, "Subgen: could not read streams for {Path}", video.Path);
+            return false;
+        }
     }
 
     /// <summary>The script that adds the button to the web page.</summary>

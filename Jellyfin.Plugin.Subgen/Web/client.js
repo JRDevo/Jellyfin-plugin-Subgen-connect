@@ -70,15 +70,23 @@
                 dataType: 'json'
             }).then(function (r) {
                 var msg;
+                var embedded = r.embedded || 0;
                 if (r.total === 0) {
                     msg = 'Subgen: no video files found.';
+                } else if (r.sent === 0 && r.total === 1) {
+                    msg = embedded
+                        ? 'Subgen: this already has English subtitles inside the file. Use Edit subtitles → Search to make one anyway.'
+                        : 'Subgen: this already has a subtitle. Delete it in Edit subtitles to make a new one.';
                 } else if (r.sent === 0) {
-                    msg = r.total === 1
-                        ? 'Subgen: this already has a subtitle. Delete it in Edit subtitles to make a new one.'
-                        : 'Subgen: all ' + r.total + ' already have a subtitle.';
+                    msg = 'Subgen: all ' + r.total + ' already have subtitles.';
                 } else {
                     msg = 'Subgen: making ' + r.sent + ' subtitle(s). They show up here when ready.';
-                    if (r.skipped > 0) msg += ' ' + r.skipped + ' already had one.';
+                }
+                if (r.total > 1 && (r.skipped > 0 || embedded > 0)) {
+                    var parts = [];
+                    if (r.skipped > 0) parts.push(r.skipped + ' had a subtitle file');
+                    if (embedded > 0) parts.push(embedded + ' have English subtitles inside the file');
+                    msg += ' Skipped: ' + parts.join(', ') + '.';
                 }
                 toast(msg);
             }, function () {
