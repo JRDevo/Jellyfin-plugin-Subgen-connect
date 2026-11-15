@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/JRDevo/Jellyfin-plugin-Subgen-connect/main/assets/banner.png",
     "versions": [
       {
+        "version": "1.1.0.0",
+        "changelog": "Built for Jellyfin 12.4.0.",
+        "targetAbi": "12.4.0.0",
+        "sourceUrl": "https://github.com/JRDevo/Jellyfin-plugin-Subgen-connect/releases/download/v1.1.0/jellyfin-plugin-subgen-connect_1.1.0.0.zip",
+        "checksum": "02a3afab555595886a6c389b5e483847",
+        "timestamp": "2026-11-15T00:01:19Z"
+      },
+      {
         "version": "1.0.0.0",
         "changelog": "Built for Jellyfin 12.4.0.",
         "targetAbi": "12.4.0.0",
